@@ -1,0 +1,172 @@
+# Intrapod
+# Evan Nosich (GitHub @ enosich)
+#
+# A modification of Interpod by Christian Soffke (which is loosely
+# based on AMusicPod by David Barka, which is based on and uses
+# icons from the xhibition theme by Justin Fite) that adds
+# CJKTC language support.
+#
+# Intrapod.sbs SBS file
+
+#	Load needed fonts
+%Fl(3,13-Intra-Bold.fnt)
+%Fl(5,16-Intra-SemiBold.fnt)
+%Fl(9,16-Intra-V.fnt)
+
+#	Preload icons
+%xl(P,playerStatus.bmp,0,0,4)
+%xl(A,holdSlider.bmp,0,0,2)
+%xl(L,busyIndicator.bmp,16,3,16)
+%xl(B,batteryStatus.bmp,33,2,9)
+%xl(M,usbBackdrop.bmp,0,0)
+
+
+
+
+# ---------
+# Logic:
+# ---------
+
+# 	Display bar on bottom with album art and track info as necessary
+%?if(%cs, !=, 2)<%Vd(status)%?mp<%Vd(bottombarsmall)|%Vd(bottombar)%?C<%Vd(albumart)%Vd(currenttrack)|%Vd(currenttrackshiftedleft)>>>
+
+# 	Set up UI Viewport
+# 	Use larger viewport if nothing is playing
+%?mp<%VI(mainlarge)|%VI(main)>
+
+#	Display lock icon if hold slider is engaged
+%?mh<%Vd(lock)|%Vd(unlocked)>
+
+
+
+
+# ---------
+# Viewports:
+# ---------
+
+%Vl(status,0,0,320,23,-)
+%Vf(ededed)
+%Vb(ededed)
+# 	ugly hack to fix visual glitch - don't remove following line
+%?cs<||||||%?mp<%Lt|>|%?mp<%Lt|>|>
+
+
+# 	Title bar text, centered, at the top
+#
+# 	Scrolling, displays centered
+#
+# 	(Current screen (cs) values:)
+#
+# 		1 Menus
+#		2 WPS
+#	 	3 Recording screen
+#	 	4 FM Radio screen
+#	 	5 Current Playlist screen
+#	 	6 Settings menus
+#	 	7 File browser
+#	 	8 Database browser
+#	 	9 Plugin browser
+#	 	10 Quickscreen
+#	 	11 Pitchscreen
+#	 	12 Setting chooser
+#	 	13 Playlist Catalogue Viewer
+#	 	14 Plugin
+#	 	15 Context menu
+#	 	16 System Info screen
+#	 	17 Time and Date Screen
+#	 	18 Bookmark browser
+#	 	19 Shortcuts menu
+#	 	20 Track Info screen
+#
+%Vl(status,48,4,-48,17,3)
+%Vf(000000)
+%Vb(ededed)
+%s%ac%?cs<iPod||Recording|FM Radio|%Lt|%Lt|%Lt|%Lt|%Lt|%?cf<%cH:%cM|%cl:%cM %cP>%?if(%St(battery display), =, graphic)< - %?if(%bl, =, 100)<CGD|%?if(%bl, =, 99)<CGD|%bl%%>>>|%Lt|%Lt|%Lt|%Lt|%?if(%Lt, =,Context Menu)<Perform Action...|%Lt>|%Lt|%Lt|%Lt|%Lt|%Lt|iPod>
+
+
+#	Smaller viewport to make room for larger bar on bottom
+%Vi(main,2,23,316,175,-)
+%Vf(000000)
+%Vb(ffffff)
+
+#	Larger Viewport if nothing is playing
+%Vi(mainlarge,2,23,316,200,-)
+%Vf(000000)
+%Vb(ffffff)
+
+
+#	USB screen
+%?if(%cs, =, 21)<%xd(M)>
+
+
+# 	Hold Slider Icon, to the right of the player status icon
+%Vl(lock,20,6,7,9,-)
+%xd(Ab)
+#	Unlocked Hold slider
+%Vl(unlocked,20,6,7,9,-)
+%?cs<%Vb(ededed)|%Vb(f8f8f8)|%Vb(ededed)>
+
+
+
+# 	Player Status Icon, in upper left corner
+%V(3,6,13,9,-)
+%Vf(000000)
+%?cs<%Vb(ededed)|%Vb(f8f8f8)|%Vb(ededed)>
+# 	Display appropriate icon (P) for the current state
+#
+# 	Player Status:
+#		Stop,
+#		Play,
+#		Pause,
+#		Fast Forward,
+#		Rewind,
+#		Recording,
+#		Recording paused,
+#		FM Radio playing,
+#		FM Radio muted
+%?mp<|%xd(Pa)|%xd(Pb)|%xd(Pc)|%xd(Pd)|>
+
+
+# 	Battery Icon in upper right corner
+#	Busy Indicator to the left of battery icon
+%V(-44,4,-,11,3)
+%Vf(000000)
+%?cs<%Vb(ededed)|%Vb(f8f8f8)|%Vb(ededed)>
+%?if(%cs, =, 2)<%?or(%if(%bl, =, 100),%if(%bl, =, 99))<CGD|%bl %%>|%?lh<%t(0.1)%xd(La);%t(0.1)%xd(Lb);%t(0.1)%xd(Lc);%t(0.1)%xd(Ld);%t(0.1)%xd(Le);%t(0.1)%xd(Lf);%t(0.1)%xd(Lg);%t(0.1)%xd(Lh);%t(0.1)%xd(Li);%t(0.1)%xd(Lj);%t(0.1)%xd(Lk);%t(0.1)%xd(Ll);%t(0.1)%xd(Lm);%t(0.1)%xd(Ln);%t(0.1)%xd(Lo);%t(0.1)%xd(Lp)>>
+%?bp<%?bc<%xd(Ba)|%xd(Ba)>|%?bl<|%xd(Bb)|%xd(Bc)|%xd(Bd)|%xd(Be)|%xd(Bf)|%xd(Bg)|%xd(Bh)|%xd(Bi)>>
+
+
+# -----------  Bar on bottom -----------
+# -----------  of screen   -------------
+# --------------------------------------
+
+%Vl(bottombar,0,-40,320,40,-)
+%Vf(000000)
+%Vb(ededed)
+
+%Vl(bottombarsmall,0,-17,320,17,-)
+%Vf(ededed)
+%Vb(ededed)
+# 	ugly hack to fix visual glitch - don't remove following line
+%?cs<||||||%Lt|%Lt|>
+
+# 	Album Art
+%Vl(albumart,15,-35,30,30,-)
+%Vf(000000)
+%Vb(ebeeee)
+%Cl(0,0,30,30)
+%Vf(000000)
+%Vb(ededed)
+%Cd
+
+#	Current Track
+%Vl(currenttrack,55,-28,-5,-,5)
+%Vf(000000)
+%Vb(ededed)
+%s%al%?it<%it|%fn>
+
+#	Current Track shifted left
+%Vl(currenttrackshiftedleft,7,-28,-5,-,5)
+%Vf(000000)
+%Vb(ededed)
+%s%al%?it<%it|%fn>

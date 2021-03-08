@@ -1,0 +1,109 @@
+# Intrapod
+# Evan Nosich (GitHub @ enosich)
+#
+# A modification of Interpod by Christian Soffke (which is loosely
+# based on AMusicPod by David Barka, which is based on and uses
+# icons from the xhibition theme by Justin Fite) that adds
+# CJKTC language support.
+#
+# Intrapod.wps WPS file
+
+#	Load needed fonts
+%Fl(3,13-Intra-Bold.fnt)
+%Fl(8,20-Intra-SemiBold.fnt)
+%Fl(9,18-Intra-V.fnt)
+
+#	Preload icons
+%xl(R,repeat.bmp,0,0)
+%xl(S,shuffle.bmp,22,0)
+
+
+# 	Load Backdrop
+%X(wpsBackdrop.bmp)
+
+
+
+
+
+# ---------
+# Logic:
+# ---------
+
+# 	Display album art if available
+%?C<%Vd(albumart)>
+
+# 	Display volume bar while adjusting volume
+%?mv(1)<%Vd(volume)|%Vd(timeandprogress)>
+
+
+
+
+
+# ---------
+# Viewports:
+# ---------
+
+# --------------------------------------
+# -----------  Song Info   -------------
+# --------------------------------------
+
+# 	Repeat Mode and Shuffle indicators
+#	displayed in the upper right corner, below title bar
+%V(-45,20,-,20,-)
+%Vf(6f6f6f)
+%Vb(f8f8f8)
+%?mm<|%xd(Ra)|%xd(Ra)|%xd(Ra)|%xd(Ra)>
+%?if(%ps, =, s)<%xd(S)|>
+
+# 	Position in Playlist and number of items in total
+#	(displayed in upper left corner, below title bar)
+%V(18,18,120,14,3)
+%Vf(6f6f6f)
+%Vb(f8f8f8)
+%al%pp %Sx(of) %pe
+
+# 	Album Art
+%Vl(albumart,19,35,128,128,-)
+%Cl(0,0,128,128,c,c)
+%Cd
+
+#	Current Track or filename
+%V(18,-71,-2,24,8)
+%Vf(000000)
+%Vb(f8f8f8)
+%s%al%?it<%it|%fn>
+
+#	Current Artist
+%V(18,-48,-2,22,9)
+%Vf(f24e61)
+%Vb(f8f8f8)
+%al%s%?ia<%t(5)%?if(%ig,=,Classical)<%?ic<By %ic - >%ia|%ia>|%?it<%fn>>;%s%?id<%t(5)%id|%t(0)>
+
+
+# --------------------------------------
+# -------- Progress Indicators   -------
+# --------------------------------------
+
+%Vl(timeandprogress,58,-17,204,2,-)
+%pb(0,0,204,2,progressbar.bmp)
+
+#Time Current
+%Vl(timeandprogress,18,-23,38,-,3)
+%Vf(6f6f6f)
+%Vb(f8f8f8)
+%s%al%pc
+
+
+#Time Remaining
+%Vl(timeandprogress,-52,-23,-,-,3)
+%Vf(6f6f6f)
+%Vb(f8f8f8)
+%s%al-%pr
+
+
+# --------------------------------------
+# --------   Volume Indicators   -------
+# --------------------------------------
+
+%Vl(volume,58,223,204,2,-)
+%pv(0,0,204,2,volumeBar.bmp)
